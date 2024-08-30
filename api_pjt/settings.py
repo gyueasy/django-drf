@@ -29,7 +29,7 @@ OPENAI_API_KEY = config.OPENAI_API_KEY
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '3.34.191.229'
+    '3.34.191.229',
     'localhost',
     '127.0.0.1',
 ]
