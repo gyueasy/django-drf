@@ -5,7 +5,7 @@ from rest_framework import status
 from .bots import translate_bot, analyze_conversation
 
 def chat_view(request):
-    return render(request, 'chat.html')
+    return render(request, 'chatgpt/chat.html')
 
 class TranslateAPIView(APIView):
 
