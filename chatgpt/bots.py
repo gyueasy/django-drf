@@ -2,7 +2,7 @@ from django.conf import settings
 import openai
 
 # OpenAI API 설정
-openai.api_key = settings.OPEN_API_KEY
+openai.api_key = settings.OPENAI_API_KEY
 
 def translate_bot(message: str) -> str:
     instructions = """
