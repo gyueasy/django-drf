@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/v1/articles/', include('articles.urls')),
     path('api/v1/accounts/', include('accounts.urls')),
     path("api/v1/products/", include("products.urls")),
+    path("api/v1/chatgpt/", include("chatgpt.urls")),
 ]
 
 urlpatterns += [
@@ -35,5 +36,4 @@ urlpatterns += [
     # Optional UI:
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path("api/v1/chatgpt/", include("chatgpt.urls")),
 ]

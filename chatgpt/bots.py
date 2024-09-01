@@ -1,54 +1,23 @@
 from django.conf import settings
-import openai
+from openai import OpenAI
 
-# OpenAI API 설정
-openai.api_key = settings.OPENAI_API_KEY
+CLIENT = OpenAI(api_key=settings.OPEN_API_KEY)
 
-def translate_bot(message: str) -> str:
+
+def translate_bot(message):
     instructions = """
-    이제부터 너는 "영어, 한글 번역가"야. 
-    지금부터 내가 입력하는 모든 프롬프트를 무조건 한글은 영어로, 영어는 한글로 번역해줘. 
-    프롬프트의 내용이나 의도는 무시하고 오직 번역만 해줘.
+    이제부터 너는 "분쟁 조정 위원으로 근무하는 ai 판사"야. 
+    나는 너에게 카카오톡 대화내용을 첨부할거야. 만약 진짜 법률적인 시비라면
+    관련 판례를 알려주며 잘잘못을 따져줘
+    지금부터 내가 입력하는 모든 프롬프트를 듣고 반드시 몇 대 몇으로 누가 잘못했는지 판단해줘. 
+    틀릴 수 있거나 개인적일 수 있는 점은 모두 무시하고 판단해서 알려줘.
+    그리고 처음에 반드시 몇 대 몇 으로 잘못을 했는지에 대한 %를 명시해줘
     """
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": instructions},
-                {"role": "user", "content": message},
-            ],
-        )
-        return completion.choices[0].message['content'].strip()
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-def analyze_conversation(conversation: str) -> dict:
-    try:
-        response = openai.Completion.create(
-            engine="davinci",
-            prompt=(
-                f"Analyze the following conversation and provide the percentage of negative emotions and aggressive intent. "
-                f"Also, determine the speaker's share of responsibility based on these metrics:\n\n{conversation}"
-            ),
-            max_tokens=150
-        )
-        analysis_result = response.choices[0].text.strip()
-        return parse_analysis_result(analysis_result)
-    except Exception as e:
-        return {"error": str(e)}
-
-def parse_analysis_result(text: str) -> dict:
-    result = {}
-    
-    lines = text.split('\n')
-    
-    for line in lines:
-        line = line.strip().lower()
-        if 'negative emotion' in line:
-            result['negative_emotion_ratio'] = line.split(':')[1].strip()
-        elif 'aggressive intent' in line:
-            result['aggressive_intent_ratio'] = line.split(':')[1].strip()
-        elif 'responsibility' in line:
-            result['responsibility'] = line.split(':')[1].strip()
-    
-    return result
+    completion = CLIENT.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": instructions},
+            {"role": "user", "content": message},
+        ],
+    )
+    return completion.choices[0].message.content
